@@ -1,5 +1,5 @@
 # Build the Image
-docker build -t hpecp-tutorialbox
+docker build -t hpecp-tutorialbox .
 # Remove the running container
 docker rm -f hpecp-tutorialbox
 # Create a new container
