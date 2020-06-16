@@ -25,4 +25,6 @@ open the URL in a Browser http://locahost:8899
 
 
 ### Remove the running container
+```
 docker rm -f hpecp-tutorialbox
+```
