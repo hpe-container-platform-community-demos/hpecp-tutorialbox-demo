@@ -13,4 +13,4 @@ do
  done
 /home/${NB_USER}/data/hpecp-tutorialbox-demo/tools/kubeconfigtweak.py
 mkdir -p ~/.kube/
-kubectl config view > ~/.kube/config
+kubectl config view --minify=false --raw=true -o yaml > ~/.kube/config
