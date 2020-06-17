@@ -98,6 +98,7 @@ RUN /home/${NB_USER}/.local/bin/jupyter nbextension enable execute_time/ExecuteT
 RUN /home/${NB_USER}/.local/bin/jupyter labextension install spreadsheet-editor
 RUN mkdir /home/${NB_USER}/data
 USER root 
+#ADD kubectl-hpecp /usr/local/bin/ 
 RUN /home/${NB_USER}/.local/bin/jupyter nbextension enable --py --sys-prefix widgetsnbextension 
 RUN /home/${NB_USER}/.local/bin/jupyter labextension install "@jupyter-widgets/jupyterlab-manager"
 RUN /home/${NB_USER}/.local/bin/jupyter-kernelspec install /home/${NB_USER}/.local/lib/python3.6/site-packages/sparkmagic/kernels/sparkkernel
