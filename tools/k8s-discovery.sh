@@ -12,4 +12,5 @@ do
          export KUBECONFIG=$KUBECONFIG:${i}
  done
 /home/${NB_USER}/data/hpecp-tutorialbox-demo/tools/kubeconfigtweak.py
+mkdir -p ~/.kube/
 kubectl config view > ~/.kube/config
