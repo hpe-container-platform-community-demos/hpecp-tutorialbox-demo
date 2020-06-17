@@ -44,7 +44,12 @@ RUN git clone https://github.com/ahmetb/kubectx /opt/kubectx &&  ln -s /opt/kube
 RUN cd /opt/ && curl -k https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash 
 
 RUN pip3 --no-cache-dir install matplotlib numpy pandas wheel psutil  
+RUN echo "Installing HPECP"
 RUN pip3 install --upgrade git+https://github.com/hpe-container-platform-community/hpecp-client@master
+RUN curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
+RUN yum install -y gcc-c++ make krb5-devel.x86_64
+RUN yum install -y nodejs
+RUN yum install -y bash-completion
 
 RUN rm /etc/yum.repos.d/mapr_*.repo && \
     yum -q clean all && \
@@ -67,25 +72,40 @@ RUN chown -R ${NB_USER} ${HOME}
 
 
 USER ${NB_USER}
-RUN pip3 install --no-cache-dir --user matplotlib numpy pandas wheel psutil
+RUN pip3 install --no-cache-dir --user matplotlib numpy pandas wheel psutil sparkmagic
 
 RUN pip3 install --no-cache-dir --user  requests-ftp
 RUN pip3 install --no-cache-dir --user wrapt
 RUN pip3 install --no-cache-dir --user lxml
+RUN pip3 install --no-cache-dir --user lxml
 
 RUN pip3 install --no-cache-dir --user jupyterlab
 RUN pip3 install --no-cache-dir --user notebook
-
 RUN cd /home/${NB_USER} 
 RUN pip3 install --no-cache-dir --user bash_kernel
 RUN python3 -m bash_kernel.install
 RUN pip3 install --no-cache-dir --user jupyter_contrib_nbextensions
+RUN echo "Enable Kubernetes Tab Completion"
+RUN echo "unset KUBECONFIG" >> /home/${NB_USER}/.bashrc
+RUN echo 'for i in $(find /home/${NB_USER}/data/k8sconfig/*_kube.conf -maxdepth 0 -type f); do export KUBECONFIG=$KUBECONFIG:${i}; done' >> /home/${NB_USER}/.bashrc
+RUN echo "source /usr/share/bash-completion/bash_completion" >> /home/${NB_USER}/.bashrc
+RUN echo "source <(kubectl completion bash)" >> /home/${NB_USER}/.bashrc
+RUN echo "complete -F __start_kubectl kubectl" >> /home/${NB_USER}/.bashrc
 RUN /home/${NB_USER}/.local/bin/jupyter nbextensions_configurator enable --user
 RUN /home/${NB_USER}/.local/bin/jupyter contrib nbextension install --user
 RUN /home/${NB_USER}/.local/bin/jupyter nbextension enable toc2/main
 RUN /home/${NB_USER}/.local/bin/jupyter nbextension enable execute_time/ExecuteTime
+RUN /home/${NB_USER}/.local/bin/jupyter labextension install spreadsheet-editor
 RUN mkdir /home/${NB_USER}/data
+USER root 
+RUN /home/${NB_USER}/.local/bin/jupyter nbextension enable --py --sys-prefix widgetsnbextension 
+RUN /home/${NB_USER}/.local/bin/jupyter labextension install "@jupyter-widgets/jupyterlab-manager"
+RUN /home/${NB_USER}/.local/bin/jupyter-kernelspec install /home/${NB_USER}/.local/lib/python3.6/site-packages/sparkmagic/kernels/sparkkernel
+RUN /home/${NB_USER}/.local/bin/jupyter-kernelspec install /home/${NB_USER}/.local/lib/python3.6/site-packages/sparkmagic/kernels/pysparkkernel
+RUN /home/${NB_USER}/.local/bin/jupyter-kernelspec install /home/${NB_USER}/.local/lib/python3.6/site-packages/sparkmagic/kernels/sparkrkernel
+USER ${NB_USER}
 #CMD cd /home/${NB_USER} && /home/${NB_USER}/.local/bin/jupyter-notebook --ip 0.0.0.0 --NotebookApp.password='sha1:30623dd781fc:fbc1f26b4d7724276a33755eafbcf610d688762c'
-CMD cd /home/${NB_USER}/data; git clone https://github.com/hpe-container-platform-community-demos/hpecp-tutorialbox-demo && cd /home/${NB_USER}/data/hpecp-tutorialbox-demo; git pull &&/home/${NB_USER}/.local/bin/jupyter lab --ip 0.0.0.0 --NotebookApp.password='sha1:30623dd781fc:fbc1f26b4d7724276a33755eafbcf610d688762c'
+RUN cd /home/${NB_USER}/data; git clone https://github.com/hpe-container-platform-community-demos/hpecp-tutorialbox-demo 
+CMD cd /home/${NB_USER}/data/hpecp-tutorialbox-demo; git pull &&/home/${NB_USER}/.local/bin/jupyter lab --ip 0.0.0.0 --NotebookApp.password='sha1:30623dd781fc:fbc1f26b4d7724276a33755eafbcf610d688762c'
 
 EXPOSE 8888 80 
