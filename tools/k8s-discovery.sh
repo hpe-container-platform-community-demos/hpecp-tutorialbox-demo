@@ -1,5 +1,5 @@
 mkdir -p /home/${NB_USER}/data/k8sconfig/
-CLUSTERS=$(hpecp k8scluster list --columns [id,name]  --output text | sed 1d | tr -s '[:blank:]' ',')
+CLUSTERS=$(hpecp k8scluster list --columns [id,name]  --output text | tr -s '[:blank:]' ',')
 for CLUSTER in $CLUSTERS;
 do
     ID=$(echo $CLUSTER | cut -d ',' -f 1)
