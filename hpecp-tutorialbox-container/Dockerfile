@@ -44,7 +44,7 @@ RUN git clone https://github.com/ahmetb/kubectx /opt/kubectx &&  ln -s /opt/kube
 RUN cd /opt/ && curl -k https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash 
 
 RUN pip3 --no-cache-dir install matplotlib numpy pandas wheel psutil  
-RUN echo "Installing HPECP"
+RUN echo "Installing HPECP Python API"
 RUN pip3 install --upgrade git+https://github.com/hpe-container-platform-community/hpecp-client@master
 RUN curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
 RUN yum install -y gcc-c++ make krb5-devel.x86_64
