@@ -108,5 +108,5 @@ USER ${NB_USER}
 #CMD cd /home/${NB_USER} && /home/${NB_USER}/.local/bin/jupyter-notebook --ip 0.0.0.0 --NotebookApp.password='sha1:30623dd781fc:fbc1f26b4d7724276a33755eafbcf610d688762c'
 RUN cd /home/${NB_USER}/data; git clone https://github.com/hpe-container-platform-community-demos/hpecp-tutorialbox-demo 
 CMD cd /home/${NB_USER}/data/hpecp-tutorialbox-demo; git pull &&/home/${NB_USER}/.local/bin/jupyter lab --ip 0.0.0.0 --NotebookApp.password='sha1:30623dd781fc:fbc1f26b4d7724276a33755eafbcf610d688762c'
-
+ENV TERM=linux
 EXPOSE 8888 80 
